@@ -1,20 +1,33 @@
-interface Pasajero {
-  nombre: string;
-  hijos?: string[];
-}
+const fetchMyData = async (country: string) => {
+  const request = await fetch(`https://restcountries.com/v3.1/name/${country}`);
+  const data = await request.json();
 
-const pasajero1: Pasajero = {
-  nombre: 'Santiago',
+  const main = document.getElementById('country');
+  main.innerHTML = JSON.stringify(data[0].name.nativeName);
 };
 
-const pasajero2: Pasajero = {
-  nombre: 'Agustina',
-  hijos: ['Laura', 'Francis'],
+fetchMyData('ecuador').then(console.log);
+
+///
+
+const fetchMyDataDOM = () => {
+  const main = document.getElementById('main');
+  // Loading Placeholder
+  main.innerHTML = '<p>Loading...';
+
+  fetch(`https://restcountries.com/v3.1/region/europe`)
+    .then((response) => response.json())
+    .then((data) => {
+      main.innerHTML = showMe(data);
+    });
 };
 
-function imprimeHijos(pasajero: Pasajero): void {
-  const cuantosHijos = pasajero.hijos?.length > 0 ? pasajero.hijos?.length : 0;
-  console.log(cuantosHijos);
+function showMe(countries) {
+  const names = countries
+    .map((country) => `<li>${country.name.common}</li>`)
+    .join('\n');
+
+  return `<ol>${names}</ol>`;
 }
 
-imprimeHijos(pasajero2);
+fetchMyDataDOM();
